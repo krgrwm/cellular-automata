@@ -5,13 +5,17 @@ import model
 import CA
 
 if __name__ == '__main__':
-    N=100
+    N=80
     lifegame = CA.CA(N, model.lifegame())
     amoeba = CA.CA(N, model.amoeba())
     cubism = CA.CA(N, model.cubism())
-    ca = amoeba
+    lava = CA.CA(N, model.lavalamp())
+    perfect = CA.CA(N, model.perfect())
+    ss = CA.CA(N, model.squarish_spirals())
+    cs = CA.CA(N, model.cyclic_spirals())
+    ca = cs
 
     while True:
-        disp_term.print_board(ca.b, ca.get_length())
+        sleep(0.06)
         ca.next_gen()
-        #sleep(0.08)
+        disp_term.print_board(ca.b, ca.get_length())
