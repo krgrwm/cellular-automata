@@ -34,29 +34,9 @@ class lifegame(Model):
 
         return next_cell
 
-class amoeba(Model):
-    def __init__(self):
-        r=3
-        num_states=2
-        Model.__init__(self, r, num_states, nbhd.neumann(r))
-        self.threshold = 10
-
-    def next_state(self, cell):
-        return (cell+1) % self.num_states
-
-    def next_cell(self, ca, x, y):
-        cell = ca.get_cell(x, y)
-        next_cell = cell
-        num_next = ca.get_nbhd(x, y).count(self.next_state(cell))
-
-        if num_next > self.threshold:
-            next_cell = self.next_state(cell)
-
-        return next_cell
-
 class cyclic(Model):
-    def __init__(self, r, num_states, threshold):
-        Model.__init__(self, r, num_states, nbhd.neumann(r))
+    def __init__(self, r, threshold, num_states, neighbor):
+        Model.__init__(self, r, num_states, neighbor(r))
         self.threshold = threshold
 
     def next_state(self, cell):
@@ -67,14 +47,25 @@ class cyclic(Model):
         next_cell = cell
         num_next = ca.get_nbhd(x, y).count(self.next_state(cell))
 
-        if num_next > self.threshold:
+        if num_next >= self.threshold:
             next_cell = self.next_state(cell)
 
         return next_cell
         
 def cubism():
-    "うまく行かない"
-    return cyclic(2, 3, 5)
+    return cyclic(2, 5, 3, nbhd.neumann)
 
 def amoeba():
-    return cyclic(3,2,10)
+    return cyclic(3, 10, 2, nbhd.neumann)
+
+def lavalamp():
+    return cyclic(2, 10, 3, nbhd.moore)
+
+def perfect():
+    return cyclic(1, 3, 4, nbhd.moore)
+
+def squarish_spirals():
+    return cyclic(2, 2, 6, nbhd.neumann)
+
+def cyclic_spirals():
+    return cyclic(3, 5, 8, nbhd.moore)
