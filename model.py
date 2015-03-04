@@ -69,3 +69,20 @@ def squarish_spirals():
 
 def cyclic_spirals():
     return cyclic(3, 5, 8, nbhd.moore)
+
+class cave(Model):
+    def __init__(self):
+        r=1
+        num_states=2
+        Model.__init__(self, r, num_states, nbhd.moore(r))
+
+    def next_cell(self, ca, x, y):
+        cell = ca.get_cell(x, y)
+        num_walls = ca.get_nbhd(x, y).count(1)
+
+        if (cell == 0 and num_walls >= 5) or (cell == 1 and num_walls >= 4):
+            next_cell = 1
+        else:
+            next_cell = 0
+
+        return next_cell

@@ -2,14 +2,15 @@ import random
 from functools import partial
 
 class CA:
-    def __init__(self, N, model):
+    def __init__(self, width, height, model):
         random.seed()
-        self.N = N
+        self.width = width
+        self.height = height
         self.model = model
-        self.b = self.make_board(self.gen_rand)
+        self.b = self.__make_board(self.__gen_rand)
 
     def get_length(self):
-        return len(self.b[0]), len(self.b)
+        return self.width, self.height
 
     def get_cell(self, x, y):
         lx, ly = self.get_length()
@@ -21,11 +22,11 @@ class CA:
     def get_nbhd(self, x, y):
         return [self.get_cell(x+x0, y+y0) for x0,y0 in self.model.nbhd()]
 
-    def gen_rand(self, i,j):
+    def __gen_rand(self, i,j):
         return random.randint(0, self.model.num_states-1)
 
-    def make_board(self, gen):
-        return [[gen(i,j) for i in range(self.N)] for j in range(self.N)]
+    def __make_board(self, gen):
+        return [[gen(i,j) for i in range(self.width)] for j in range(self.height)]
 
     def next_gen(self):
-        self.b = self.make_board(partial(self.model.next_cell, self))
+        self.b = self.__make_board(partial(self.model.next_cell, self))
