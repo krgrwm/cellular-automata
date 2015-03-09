@@ -12,27 +12,46 @@ class Model(object, metaclass=ABCMeta):
     def next_cell(self):
         pass
 
-class lifegame(Model):
-    def __init__(self):
-        r=1
-        num_states=2
-        Model.__init__(self, r, num_states, nbhd.moore(r))
+class __lager_than_life(Model):
+    def __init__(self, r, S, B, C, nbhd):
+        self.S = S
+        self.B = B
+        Model.__init__(self, r, C, nbhd(r))
 
     def next_cell(self, ca, x, y):
-        cell = ca.get_cell(x, y)
-        next_cell = cell
-        live = sum(ca.get_nbhd(x, y))
+        ALIVE = self.num_states-1
+        DEAD = 0
 
-        if cell==0:
-            if live==3:
-                next_cell=1
+        cell = ca.get_cell(x, y)
+        live = ca.get_nbhd(x, y).count(ALIVE)
+        next_cell = DEAD
+
+        if cell == ALIVE:
+            if live in self.S:
+                next_cell = cell
+            else:
+                next_cell = cell - 1
+        elif cell == DEAD:
+            if live in self.B:
+                next_cell = ALIVE
         else:
-            if live==2 or live==3:
-                next_cell=1
-            elif live <= 1 or live >=4:
-                next_cell=0
+            next_cell = cell - 1
 
         return next_cell
+
+def generations(S, B, C):
+    return __lager_than_life(1, S, B, C, nbhd.moore)
+
+def life(S, B):
+    return generations(S, B, 2)
+
+def vote_for_life(L):
+    return life([n-1 for n in L], L)
+    
+def lager_than_life(r, SMIN_MAX, BMIN_MAX, C, nbhd):
+    smin, smax = SMIN_MAX
+    bmin, bmax = BMIN_MAX
+    return __lager_than_life(r, range(smin, smax+1), range(bmin, bmax+1), C, nbhd)
 
 class cyclic(Model):
     def __init__(self, r, threshold, num_states, neighbor):

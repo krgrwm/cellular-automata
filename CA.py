@@ -30,3 +30,23 @@ class CA:
 
     def next_gen(self):
         self.b = self.__make_board(partial(self.model.next_cell, self))
+
+    def reset_board(self):
+        self.b = self.__make_board(self.__gen_rand)
+
+    def set(self, x, y, v):
+        self.b[y][x] = v
+
+    def reset(self):
+        self.b = self.__make_board(lambda x,y: 0)
+
+class CA2D(CA):
+    def __init__(self, width, height, model):
+        CA.__init__(self, width, height, model)
+        self.current_line=0
+
+    def next_gen(self):
+        line_next_gen = [self.model.next_cell(self, x, self.current_line) for x in range(self.width)]
+        self.b[current_line] = line_next_gen
+        self.current_line = (self.current_line + 1) % self.height
+

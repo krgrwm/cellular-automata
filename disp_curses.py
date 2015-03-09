@@ -18,7 +18,7 @@ def print_board(stdscr, b, lxy):
 
     for j in range(y):
         for i in range(int(x/2)):
-            stdscr.addstr(j, i*2, "  ", curses.color_pair(colorGrey(b[j][i]*3)))
+            stdscr.addstr(j, i*2, "  ", curses.color_pair(colorGrey((b[j][i]+1))))#curses.color_pair(b[j][i]))
     
 
 def main(stdscr, ca):
@@ -30,12 +30,12 @@ def main(stdscr, ca):
         curses.init_pair(i + 1, -1, i)
 
     while(True):
-        ca.next_gen()
         print_board(stdscr, ca.b, ca.get_length())
 
         stdscr.refresh()
         sleep(0.01)
-        #stdscr.getch()
+#        stdscr.getch()
+        ca.next_gen()
 
 
 #    for i in range(0, 255):
